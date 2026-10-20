@@ -1,38 +1,31 @@
-Sven Bømwøllen — original game, browser compatibility build
+Sven Bømwøllen — reconstructed native browser port
 
-Sven.exe is unchanged. No game rules, menus or animations have been rewritten.
-The working Sven.dat uses the same predecoded PCM sound cache as the Mac build.
-Images, maps and all other archive members remain byte-identical to the original.
-Original game code and artwork retain their original ownership.
+This version runs JavaScript directly in the browser with Canvas 2D and Web Audio.
+It does not execute Sven.exe and does not include a Windows runtime or CPU emulator.
 
-Boxedwine 26R1 (GPL-2.0) runs the x86 executable in WebAssembly.
-Release and corresponding source:
-https://github.com/danoon2/Boxedwine/releases/tag/26R1.0
-https://github.com/danoon2/Boxedwine/tree/26R1.0
-Unmodified single-threaded runtime and Wine 11 filesystem downloaded from:
-https://boxedwine.org/v/26R1/wine11/st/
-Unmodified threaded JavaScript and WebAssembly runtime downloaded from:
-https://boxedwine.org/v/26R1/wine11/mt/
-Runtime file hashes are recorded in build.json.
+The original graphics, sound recordings, level layouts, character designs, title
+and trademarks retain their original ownership. These materials were imported
+from the supplied Sven.dat. PNG conversion preserves the original sprite layout
+and color-key transparency. The beam texture and UFO silhouette mask derive from
+the original raw bitmap and mask; no replacement artwork was generated.
 
-Wine (LGPL-2.1-or-later) supplies Windows compatibility.
-Its 32-bit olepro32.dll is supplied from the same Wine 11.0 build used by
-the Mac package, because Boxedwine's minimal filesystem omits it:
-https://github.com/Gcenx/macOS_Wine_builds/releases/tag/11.0_1
-https://gitlab.winehq.org/wine/wine/-/tree/wine-11.0
-https://www.winehq.org/
-Full license texts: Boxedwine-LICENSE.txt, Wine-LICENSE.txt, Wine-COPYING.LIB.txt.
+The supplied executable is the behavioral reference, SHA-256:
+3c6b309fbc1993d10fefc7953af10006826729c26e11a340f61f58eba0d662e2
 
-cnc-ddraw 7.1.0.0 (MIT) supplies GDI presentation. The browser build uses the
-unmodified official release DLL; the Mac app keeps its separate wrapper and
-memory-context fix. The original game runs at 640x480 with 16-bit color.
-https://github.com/FunkyFr3sh/cnc-ddraw/releases/tag/v7.1.0.0
-The full MIT notice is in cnc-ddraw-LICENSE.txt.
+Browser game code is a reconstruction from inspected machine code, recovered
+tables and original data. It is not the original game source code. The original
+executable and archive are not modified by the import or build tools.
 
-coi-serviceworker v0.1.7 (MIT) enables browser isolation for the threaded runtime.
-Source commit: 7b1d2a092d0d2dd2b7270b6f12f13605de26f214
-https://github.com/gzuidhof/coi-serviceworker/tree/7b1d2a092d0d2dd2b7270b6f12f13605de26f214
-The full MIT notice is in coi-serviceworker-LICENSE.txt.
+The campaign includes all 20 original level maps, 147 original image definitions
+and 61 original sounds. Original frame ordering, pose anchors, interface button
+positions and default high scores are recovered from the supplied game files.
+build.json records source and release hashes. The development workspace contains
+the recovery evidence and binary comparison tests under evidence/native/.
 
-Scores and settings are saved in this browser's site storage. Clearing site
-data removes them. The web build does not read or replace Mac game saves.
+Complete behavioral, timing, visual and audio parity has not been established.
+The current reconstruction retains documented limits in special-event rendering
+and some original state transitions. Browser scores and controls are stored
+locally under sven-native-classic-v1, separately from desktop game saves.
+
+No additional redistribution rights for the original game materials are granted
+by this notice. Attribution and ownership are unchanged by this browser port.

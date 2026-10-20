@@ -1,32 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Play the original Sven Bømwøllen in your browser.">
-  <title>Sven Bømwøllen — Original</title>
+  <meta name="description" content="Sven Bømwøllen, rebuilt for the browser with the original artwork and campaign.">
+  <title>Sven Bømwøllen</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main id="dropzone">
-    <canvas id="canvas" width="640" height="480" tabindex="0" aria-label="Original Sven game"></canvas>
-    <div id="loading">
-      <h1>Sven Bømwøllen</h1>
-      <p id="status" role="status">Preparing the original game…</p>
-      <div id="spinner"><progress id="progress" aria-label="Download progress"></progress></div>
-      <button id="startbtn" disabled>PLAY ORIGINAL SVEN</button>
-      <label id="sound-checkbox" hidden><input id="soundToggle" type="checkbox" checked> Sound</label>
-    </div>
+  <main id="game-frame">
+    <canvas id="game" width="640" height="480" tabindex="0" aria-label="Sven Bømwøllen. Pfeiltasten bewegen, Leertaste Aktion, Escape Pause."></canvas>
+    <div id="loading" role="status"><p id="status">Sven wird geladen…</p><progress id="progress" max="147" value="0" aria-label="Originalgrafiken laden"></progress><button id="retry" hidden>Erneut versuchen</button></div>
   </main>
   <footer>
-    <span>Arrow keys · Space · Esc</span>
-    <button id="fullscreen" type="button">Fullscreen</button>
-    <a href="./NOTICE.txt" target="_blank" rel="noreferrer">Credits</a>
+    <span>↑ ↓ ← → · Leertaste · Esc</span>
+    <button id="sound" type="button" aria-pressed="true">Ton an</button>
+    <button id="fullscreen" type="button">Vollbild</button>
+    <a href="./NOTICE.txt" target="_blank" rel="noreferrer">Info</a>
   </footer>
-  <input id="showConsole" type="checkbox" hidden>
-  <textarea id="output" hidden aria-label="Runtime log"></textarea>
-  <script src="./coi-serviceworker.js"></script>
-  <script src="./runtime/boxedwine-shell.js"></script>
-  <script src="./launcher.js"></script>
+  <script type="module" src="./main.mjs"></script>
 </body>
 </html>
