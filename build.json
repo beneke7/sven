@@ -1,0 +1,30 @@
+{
+  "runtime": "Boxedwine 26R1 / Wine 11, threaded WebAssembly with single-thread fallback",
+  "runtimeSource": "https://boxedwine.org/v/26R1/wine11/st/",
+  "runtimeSHA256": {
+    "boxedwine-shell.js": "4eb37b1fe78c81451a22bc67485ac5e151b243912775596299b6736cd2c1678c",
+    "boxedwine.js": "5f4fd46d509d60a669961cfb405669c9aa001769ca551aada878c7c75eb62586",
+    "boxedwine.wasm": "d4148bda3955e0378de56719c716610f2e1daffd3581d0a2085970ba4df1decf",
+    "boxedwine.zip": "5d251b6d53cad1c31de254c5285603d193f91bc3129b9c9ba39c4cc65a24edb3"
+  },
+  "originalSHA256": {
+    "Sven.exe": "3c6b309fbc1993d10fefc7953af10006826729c26e11a340f61f58eba0d662e2",
+    "Sven.dat": "e9c0fc82f52ee4adefb1ee9fa96be77186c31f5232b6923cbff1f11739582c2e",
+    "Score.dat": "853c94e94bde2dec0cb48195286e0ef1ee061cca18366046e9b543857bfc7fb4",
+    "PNM.icl": "8f52bcddef104baab86d9b73229890f11a1ae33ddeb55dbe579adea3453d7f09"
+  },
+  "olepro32SHA256": "e14e8063dc4a19a97f9aada9aecbc082f1346e9ce9dd64163837f3df3653dd1e",
+  "threadedRuntimeSHA256": {
+    "boxedwine.js": "96c64b7abed1f731a0d326c080905934b42ab061ee2cdf69658f7d8d9a4812ef",
+    "boxedwine.wasm": "4e03e82c2068b02d1ed4280c3bc2650dbeb374ef4a78263c0b370621afb9521b"
+  },
+  "originalArchiveSHA256": "e9c0fc82f52ee4adefb1ee9fa96be77186c31f5232b6923cbff1f11739582c2e",
+  "workingArchiveSHA256": "3947678d5a33860d69167f5d9f1b27f4cbb34ace06857fb0818948c99d6ac297",
+  "gamePackageSHA256": "8418b4ca5b7fa6b0a7c3bb477077aba5ce0045706c607fdb942fa5c16e372160",
+  "ddrawSHA256": "85e0f7d530dfda134793a57cb3e76b0287dcc96892ee57162dd68f47283b03a9",
+  "ddraw": "cnc-ddraw 7.1.0.0, unmodified official release",
+  "ddrawSource": "https://github.com/FunkyFr3sh/cnc-ddraw/releases/download/v7.1.0.0/cnc-ddraw.zip",
+  "ddrawArchiveSHA256": "0b13ab89a64c9918189b1dadd449ef6ed3cb3b7b19cabd96d8adbd95505bb908",
+  "display": "640x480, 16-bit color; original game's fullscreen option presented in browser canvas",
+  "audio": "Original sounds predecoded to PCM; all other archive members unchanged"
+}

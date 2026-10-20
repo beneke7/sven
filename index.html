@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Play the original Sven Bømwøllen in your browser.">
+  <title>Sven Bømwøllen — Original</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main id="dropzone">
+    <canvas id="canvas" width="640" height="480" tabindex="0" aria-label="Original Sven game"></canvas>
+    <div id="loading">
+      <h1>Sven Bømwøllen</h1>
+      <p id="status" role="status">Preparing the original game…</p>
+      <div id="spinner"><progress id="progress" aria-label="Download progress"></progress></div>
+      <button id="startbtn" disabled>PLAY ORIGINAL SVEN</button>
+      <label id="sound-checkbox" hidden><input id="soundToggle" type="checkbox" checked> Sound</label>
+    </div>
+  </main>
+  <footer>
+    <span>Arrow keys · Space · Esc</span>
+    <button id="fullscreen" type="button">Fullscreen</button>
+    <a href="./NOTICE.txt" target="_blank" rel="noreferrer">Credits</a>
+  </footer>
+  <input id="showConsole" type="checkbox" hidden>
+  <textarea id="output" hidden aria-label="Runtime log"></textarea>
+  <script src="./coi-serviceworker.js"></script>
+  <script src="./runtime/boxedwine-shell.js"></script>
+  <script src="./launcher.js"></script>
+</body>
+</html>
