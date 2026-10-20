@@ -4,6 +4,9 @@ import { createGame, stepGame, nextLevel } from './simulation.mjs';
 const canvas = document.getElementById('game');
 const loading = document.getElementById('loading'), status = document.getElementById('status');
 const progress = document.getElementById('progress'), soundButton = document.getElementById('sound');
+const nameInput = document.getElementById('score-name'), pauseButton = document.getElementById('pause');
+const touchButtons = [...document.querySelectorAll('[data-touch]')], touchPointers = new Map();
+document.documentElement.classList.toggle('touch-device', navigator.maxTouchPoints > 0 || matchMedia('(any-pointer: coarse)').matches);
 const STORAGE = 'sven-native-classic-v1';
 const DEFAULT_KEYS = ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'Space'];
 const DEFAULT_SCORES = [{name:'Sören',score:500},{name:'Dörte',score:400},{name:'Ole',score:300},{name:'Ansgar',score:200},{name:'Leif',score:100}];
@@ -36,8 +39,14 @@ const held = new Set();
 function persist() { try { localStorage.setItem(STORAGE, JSON.stringify(saved)); } catch { /* Do not interrupt play when storage is full or disabled. */ } }
 function keysLabel(code) { return ({ ArrowUp:'↑', ArrowDown:'↓', ArrowLeft:'←', ArrowRight:'→', Space:'Leertaste', Enter:'Enter' })[code] || code.replace(/^Key|^Digit/, ''); }
 function setScene(next) {
-  scene = next; selection = 0; remapping = null; held.clear(); actionPressed = false;
-  canvas.focus();
+  scene = next; selection = 0; remapping = null; held.clear(); actionPressed = false; clearTouch();
+  document.documentElement.dataset.scene = next;
+  nameInput.hidden = next !== 'name';
+  if (next === 'name') { nameInput.value = name; nameInput.focus(); }
+  else canvas.focus({preventScroll:true});
+  pauseButton.disabled = next === 'loading' || next === 'menu';
+  pauseButton.textContent = next === 'playing' ? 'Pause' : next === 'paused' ? 'Weiter' : 'Menü';
+  document.getElementById('touch-action').textContent = next === 'playing' ? 'AKTION' : next === 'menu' ? 'START' : 'OK';
   if (audio) audio.music(next === 'menu' ? 'MenuSound' : null);
 }
 function soundState() { soundButton.textContent = audio.enabled ? 'Ton an' : 'Ton aus'; soundButton.setAttribute('aria-pressed', String(audio.enabled)); }
@@ -132,7 +141,6 @@ function drawScene() {
       buttons = [];
       art.ctx.fillStyle = '#dfcf8b'; art.ctx.fillRect(378, 112, 228, 217);
       art.text('Dein Name', 492, 145, 25, '#3a371c', 'center');
-      art.text(name + (nameCursor ? '_' : ''), 492, 210, 23, '#ad0d27', 'center');
       art.text(game.score, 492, 250, 23, '#3a371c', 'center');
       button(null, 417, 281, submitScore, {text:'OK',width:150});
     }
@@ -149,6 +157,8 @@ function drawScene() {
 }
 
 function activeDirection() {
+  const touch = [...touchPointers.values()].filter(value => value < 4).at(-1);
+  if (touch != null) return touch;
   if (lastDirection != null && held.has(saved.keys[lastDirection])) return lastDirection;
   return saved.keys.slice(0,4).findIndex(key => held.has(key));
 }
@@ -158,11 +168,14 @@ function loop(time) {
   const started = performance.now();
   if (scene === 'playing') {
     const direction = activeDirection();
-    stepGame(game, { direction: direction < 0 ? null : direction, actionPressed, actionHeld: held.has(saved.keys[4]) }, dt);
+    const touchAction = [...touchPointers.values()].includes(4);
+    // Holding the touch action repeats like holding Space on a keyboard.
+    stepGame(game, { direction: direction < 0 ? null : direction, actionPressed: actionPressed || touchAction, actionHeld: held.has(saved.keys[4]) || touchAction }, dt);
     actionPressed = false;
     for (const event of game.events.splice(0)) if (event.type === 'sound') audio.play(event.key);
     if (game.phase !== lastPhase) {
       lastPhase = game.phase; phaseStarted = clock;
+      document.getElementById('touch-action').textContent = game.phase === 'playing' ? 'AKTION' : 'WEITER';
       if (game.levelIndex !== saved.level) { saved.level = game.levelIndex; persist(); }
     }
     if (game.phase === 'level-clear' && clock - phaseStarted >= 1200) nextLevel(game);
@@ -179,8 +192,8 @@ canvas.addEventListener('pointermove', event => {
   canvas.style.cursor = found >= 0 ? 'pointer' : 'default';
   if (found >= 0) selection = found;
 });
-canvas.addEventListener('pointerdown', async event => {
-  canvas.focus(); await audio?.unlock(); if (scene === 'menu') audio.music('MenuSound');
+canvas.addEventListener('pointerdown', event => {
+  canvas.focus({preventScroll:true}); audio?.unlock(); if (scene === 'menu') audio?.music('MenuSound');
   const bounds = canvas.getBoundingClientRect(), x = (event.clientX-bounds.left)*640/bounds.width, y = (event.clientY-bounds.top)*480/bounds.height;
   buttons.find(b => x >= b.x && x < b.x+b.width && y >= b.y && y < b.y+b.height)?.action();
 });
@@ -191,11 +204,9 @@ window.addEventListener('keydown', event => {
   if (scene === 'loading' || event.metaKey || event.ctrlKey || event.altKey || event.code === 'Tab') return;
   if (scene === 'boss') { event.preventDefault(); setScene(previousScene); return; }
   if (scene === 'name') {
-    event.preventDefault();
-    if (event.code === 'Enter') submitScore();
-    else if (event.code === 'Backspace') name = name.slice(0, -1);
-    else if (event.code === 'Escape') { name = 'Sven'; submitScore(); }
-    else if (event.key.length === 1 && name.length < 17) name += event.key;
+    if (event.isComposing) return;
+    if (event.code === 'Enter') { event.preventDefault(); submitScore(); }
+    else if (event.code === 'Escape') { event.preventDefault(); name = 'Sven'; submitScore(); }
     return;
   }
   if (remapping != null) {
@@ -232,17 +243,55 @@ window.addEventListener('keydown', event => {
   }
 });
 window.addEventListener('keyup', event => held.delete(event.code));
-function pauseOnBlur() { held.clear(); actionPressed = false; if (scene === 'playing' && game?.phase === 'playing') setScene('paused'); }
+function clearTouch() {
+  touchPointers.clear();
+  for (const button of touchButtons) button.classList.remove('held');
+}
+function releaseTouch(event) {
+  touchPointers.delete(event.pointerId);
+  for (const button of touchButtons) button.classList.toggle('held', [...touchPointers.values()].includes(Number(button.dataset.touch)));
+}
+for (const button of touchButtons) {
+  button.addEventListener('pointerdown', event => {
+    if (!audio || event.button !== 0) return;
+    event.preventDefault(); audio.unlock();
+    const value = Number(button.dataset.touch);
+    if (scene !== 'playing' || game.phase !== 'playing') {
+      if (value === 4) buttons[selection]?.action();
+      else if (buttons.length) selection = (selection + (value < 2 ? -1 : 1) + buttons.length) % buttons.length;
+      return;
+    }
+    button.setPointerCapture(event.pointerId);
+    touchPointers.set(event.pointerId, value); button.classList.add('held');
+    if (value === 4) actionPressed = true;
+  });
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) button.addEventListener(type, releaseTouch);
+  button.addEventListener('contextmenu', event => event.preventDefault());
+  button.addEventListener('click', event => {
+    // Keyboard and assistive activation has no pointerdown.
+    if (event.detail === 0) {
+      if (scene === 'playing' && Number(button.dataset.touch) === 4) { audio?.unlock(); actionPressed = true; }
+      else if (scene !== 'playing' && Number(button.dataset.touch) === 4) buttons[selection]?.action();
+    }
+  });
+}
+nameInput.addEventListener('input', () => { name = nameInput.value.slice(0,17); });
+pauseButton.addEventListener('click', () => { audio?.unlock(); setScene(scene === 'playing' ? 'paused' : scene === 'paused' ? 'playing' : 'menu'); });
+function pauseOnBlur() { held.clear(); clearTouch(); actionPressed = false; if (scene === 'playing' && game?.phase === 'playing') setScene('paused'); }
 window.addEventListener('blur', pauseOnBlur);
 document.addEventListener('visibilitychange', () => { if (document.hidden) pauseOnBlur(); lastTime = performance.now(); });
+screen.orientation?.addEventListener('change', pauseOnBlur);
+const fullscreenButton = document.getElementById('fullscreen');
+fullscreenButton.hidden = !document.fullscreenEnabled;
 document.getElementById('fullscreen').addEventListener('click', async () => {
-  try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.getElementById('game-frame').requestFullscreen(); } catch { /* The browser may deny fullscreen; resizing remains available. */ }
+  try { if (document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); } catch { /* The browser may deny fullscreen; resizing remains available. */ }
   canvas.focus();
 });
 soundButton.addEventListener('click', async () => { await audio?.unlock(); if (audio) toggleSound(); canvas.focus(); });
 document.getElementById('retry').addEventListener('click', () => location.reload());
 
 window.svenNativeDiagnostics = () => ({ engine:'native-js-canvas', scene, fps, frameMilliseconds:renderMilliseconds,
+  touch:{direction:[...touchPointers.values()].filter(value=>value<4).at(-1) ?? null,actionHeld:[...touchPointers.values()].includes(4),pointers:touchPointers.size},
   missingFrames: art ? [...art.missing] : [], sprites: art?.sprites, level:game?.levelIndex,
   player: game ? {x:game.player.x,y:game.player.y,move:game.player.move,state:game.player.state,dir:game.player.dir,hidden:game.player.hidden,mode:game.player.mode} : null,
   score:game?.score,lives:game?.lives,timeLeft:game?.timeLeft,phase:game?.phase,sheep:game?.sheep.length,

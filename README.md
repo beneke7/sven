@@ -10,6 +10,15 @@ the original boss screen. The setup screen supports both original key layouts
 and custom bindings. Scores, controls and the continue level are saved in this
 browser. Clearing site storage removes them.
 
+Phones and tablets show a four-direction touch pad and an action button. Hold a
+direction to move; hold AKTION to interact. Both work together with two fingers.
+On menus the arrows select a button and OK activates it; the original menu
+buttons also respond to taps. The footer pauses/resumes or returns to the menu.
+Landscape puts the controls beside the original 4:3 field; portrait puts them
+below it. Rotating the screen or leaving the tab pauses play and releases held
+controls. High scores use the phone's normal keyboard. Fullscreen is offered
+only where the browser supports it; controls stay available in fullscreen.
+
 The published repository contains the static site. Serve it locally with:
 
 ```sh

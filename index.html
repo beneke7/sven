@@ -2,18 +2,32 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#25301e">
   <meta name="description" content="Sven Bømwøllen, rebuilt for the browser with the original artwork and campaign.">
   <title>Sven Bømwøllen</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <main id="game-frame">
-    <canvas id="game" width="640" height="480" tabindex="0" aria-label="Sven Bømwøllen. Pfeiltasten bewegen, Leertaste Aktion, Escape Pause."></canvas>
+    <div id="surface">
+      <canvas id="game" width="640" height="480" tabindex="0" aria-label="Sven Bømwøllen. Pfeiltasten oder Touch-Pfeile bewegen, Leertaste oder Aktion, Escape oder Pause."></canvas>
+      <input id="score-name" aria-label="Dein Name" maxlength="17" autocomplete="nickname" enterkeyhint="done" hidden>
+    </div>
+    <div id="touch-controls" aria-label="Touch-Steuerung">
+      <div class="direction-pad" role="group" aria-label="Bewegen">
+        <button type="button" data-touch="1" aria-label="Nordwest">↖</button>
+        <button type="button" data-touch="0" aria-label="Nordost">↗</button>
+        <button type="button" data-touch="2" aria-label="Südwest">↙</button>
+        <button type="button" data-touch="3" aria-label="Südost">↘</button>
+      </div>
+      <button type="button" data-touch="4" id="touch-action">START</button>
+    </div>
     <div id="loading" role="status"><p id="status">Sven wird geladen…</p><progress id="progress" max="147" value="0" aria-label="Originalgrafiken laden"></progress><button id="retry" hidden>Erneut versuchen</button></div>
   </main>
   <footer>
-    <span>↑ ↓ ← → · Leertaste · Esc</span>
+    <span class="keyboard-hint">↑ ↓ ← → · Leertaste · Esc</span>
+    <button id="pause" type="button" disabled>Pause</button>
     <button id="sound" type="button" aria-pressed="true">Ton an</button>
     <button id="fullscreen" type="button">Vollbild</button>
     <a href="./NOTICE.txt" target="_blank" rel="noreferrer">Info</a>
