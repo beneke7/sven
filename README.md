@@ -1,5 +1,12 @@
 # Sven Bømwøllen in the browser
 
+The same engine also runs offline in **Sven.app** on macOS. In the development
+workspace, `python3 tools/build_native_mac.py` packages the verified site with a
+small Swift AppKit/WebKit shell. `play.command` launches that edition;
+`original-reference.command` keeps access to the unmodified executable in Wine.
+The Mac shell has native pause/fullscreen menus and a separate atomic save for
+scores, controls and progress, independent of its temporary loopback port.
+
 A reconstructed JavaScript port using the original artwork, sounds and all 20
 campaign maps. Gameplay runs directly in Canvas 2D and Web Audio. No executable,
 Windows compatibility layer or CPU emulator runs in the browser. Exact parity

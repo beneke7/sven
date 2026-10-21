@@ -112,7 +112,9 @@ function finishDamage(game) {
 }
 export function damagePlayer(game, reason = 'caught') {
   const p = game.player;
-  if (game.phase !== 'playing' || (reason !== 'timeout' && game.now < p.invulnerableUntil) || p.state === 'hurt') return false;
+  // Pond occupancy switches halfway through the step, before the splash starts.
+  const inWater = p.state === 'splash' || 'cp'.includes(terrainAt(game, p.x, p.y));
+  if (game.phase !== 'playing' || (reason !== 'timeout' && (game.now < p.invulnerableUntil || inWater)) || p.state === 'hurt') return false;
   cancelInteraction(game);
   p.move = null; p.hidden = false; p.state = 'hurt'; p.stateTime = 0;
   p.damageReason = reason;
